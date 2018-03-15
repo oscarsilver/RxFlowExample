@@ -9,14 +9,13 @@
 import UIKit
 import RxFlow
 
-final class FirstRunFlow: Flow, Stepper {
+final class FirstRunFlow: Flow {
     
     private let navigationController = UINavigationController()
     private let authService: AuthService
     
     init(service: AuthService) {
         self.authService = service
-        step(to: .firstStart)
     }
     
     deinit {
@@ -34,9 +33,7 @@ extension FirstRunFlow {
         case .first(.applePay): return navigateToApplePaySplashScreen()
         case .first(.applePayDone): return navigate(to: AppStep.first(.permissions))
         case .first(.permissions): return navigateToPermissionsScreen()
-        case .first(.permissionsDone):
-            self.step(to: .first(.done)) // same as `self.step.accept(AppStep.first(.done))`
-            return .none
+        case .first(.permissionsDone): return .end(withStepForParentFlow: AppStep.first(.done))
         default: return .none
         }
     }

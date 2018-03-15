@@ -35,7 +35,7 @@ extension AuthFlow {
         case .auth(.signInOrSignUp): return navigateToSignInOrSignUpScreen()
         case .auth(.signIn): return navigateToSignInScreen()
         case .auth(.signUp): return navigateToSignUpScreen()
-        case .auth(.signInDone), .auth(.signUpDone): self.step(to: .auth(.done)); return .none
+        case .auth(.signInDone), .auth(.signUpDone): return .end(withStepForParentFlow: AppStep.auth(.done))
         default: return .none
         }
     }

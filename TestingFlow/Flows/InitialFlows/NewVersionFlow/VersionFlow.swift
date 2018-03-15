@@ -35,7 +35,7 @@ extension VersionFlow {
         case .version(.forceUpdate): return navigateToMockForceUpdateScreen()
         case .version(.forceUpdateBlock): return navigateToForceUpdateBlockingScreen()
         case .version(.onboarding): return navigateToOnboardingScreen()
-        case .version(.onboardingDone): return navigateToNextFlow()
+        case .version(.onboardingDone): return .end(withStepForParentFlow: AppStep.version(.done))
         default: return .none
         }
     }
@@ -61,12 +61,6 @@ private extension VersionFlow {
         let viewController = OnboardingViewController(viewModel: viewModel)
         navigationController.viewControllers = [viewController]
         return .one(flowItem: NextFlowItem(nextPresentable: viewController, nextStepper: viewModel))
-    }
-    
-    
-    func navigateToNextFlow() -> NextFlowItems {
-        step(to: .version(.done))
-        return .none
     }
 }
 

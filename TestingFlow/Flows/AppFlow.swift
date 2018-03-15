@@ -11,17 +11,16 @@ import RxFlow
 import Swinject
 import SwinjectAutoregistration
 
-final class AppFlow: Flow, Stepper {
-    private let navigationController = UINavigationController()
-    
+final class AppFlow: Flow {
     private let container: Container
     private lazy var authService = container ~> AuthService.self
     private lazy var appConfigService = container ~> AppConfigService.self
+
+    private weak var window: UIWindow?
     
-    init(container parent: Container) {
-        navigationController.view.backgroundColor = .green
+    init(container parent: Container, window: UIWindow) {
+        self.window = window
         container = makeContainer(parent: parent)
-        step(to: .start)
     }
     
     deinit {
@@ -37,7 +36,12 @@ private func makeContainer(parent: Container) -> Container {
 }
 
 extension AppFlow {
-    var root: Presentable { return navigationController }
+    var rootWindow: UIWindow {
+        guard let window = window else { fatalError("No window..") }
+        return window
+    }
+
+    var root: Presentable { return rootWindow }
     
     func navigate(to step: Step) -> NextFlowItems {
         guard let step = step as? AppStep else { return .none }
@@ -45,19 +49,12 @@ extension AppFlow {
         case .start: return navigate(to: initialStep)
             
         case .first(.start): return startFirstRunFlow()
-        case .first(.done):
-            navigationController.presentedViewController?.dismiss(animated: false)
-            return navigate(to: AppStep.versionStart)
+        case .first(.done): return navigate(to: AppStep.versionStart)
             
         case .version(.start): return startVersionFlow()
-        case .version(.done):
-            navigationController.presentedViewController?.dismiss(animated: false)
-            return navigate(to: AppStep.authStart)
-            
+        case .version(.done): return navigate(to: AppStep.authStart)
         case .auth(.start): return startAuthFlow()
-        case .auth(.done):
-            navigationController.presentedViewController?.dismiss(animated: false)
-            return navigate(to: AppStep.mainStart)
+        case .auth(.done): return navigate(to: AppStep.mainStart)
             
         case .main(.start): return startMainFlow()
         default: return .none
@@ -83,22 +80,19 @@ private extension AppFlow {
     func startFirstRunFlow() -> NextFlowItems {
         print("💜💜💜💜💜 Start First Flow")
         let firstRunFlow = FirstRunFlow(service: authService)
-        Flows.whenReady(flow1: firstRunFlow) { [weak self] in self?.navigationController.present($0, animated: false, completion: nil) }
-        return .one(flowItem: NextFlowItem(firstRunFlow))
+        return startTemporaryFlow(firstRunFlow, initialStep: .firstStart)
     }
     
     func startVersionFlow() -> NextFlowItems {
         print("💚💚💚💚💚💚 Start Version Flow")
         let flow = VersionFlow(service: appConfigService)
-        Flows.whenReady(flow1: flow) { [weak self] in self?.navigationController.present($0, animated: false, completion: nil) }
-        return .one(flowItem: NextFlowItem(flow))
+        return startTemporaryFlow(flow, initialStep: .versionStart)
     }
     
     func startAuthFlow() -> NextFlowItems {
         print("💙💙💙💙💙💙 Start Auth Flow")
         let flow = AuthFlow(service: authService)
-        Flows.whenReady(flow1: flow) { [weak self] in self?.navigationController.present($0, animated: false, completion: nil) }
-        return .one(flowItem: NextFlowItem(flow))
+        return startTemporaryFlow(flow, initialStep: .authStart)
     }
     
     func startMainFlow() -> NextFlowItems {
@@ -114,12 +108,30 @@ private extension AppFlow {
             tab2Root.tabBarItem = tabBarItem2
             
             tabbarController.setViewControllers([tab1Root, tab2Root], animated: false)
-            self.navigationController.viewControllers = [tabbarController]
+            self.window?.rootViewController = tabbarController
         })
         
         return .multiple(flowItems: [
             NextFlowItem(nextPresentable: myStaysFlow, nextStepper: myStaysFlow),
             NextFlowItem(nextPresentable: myPageFlow, nextStepper: myPageFlow)
             ])
+    }
+}
+
+private extension AppFlow {
+
+    func startTemporaryFlow<TemporaryFlow>(_ flow: TemporaryFlow, initialStep: AppStep) -> NextFlowItems where TemporaryFlow: Flow {
+        Flows.whenReady(flow1: flow) { [unowned self] (root) in
+            self.rootWindow.rootViewController = root
+        }
+        return .one(flowItem: NextFlowItem(nextPresentable: flow, nextStepper: OneStepper(withSingleStep: initialStep)))
+    }
+}
+
+final class AppStepper: Stepper {
+    private let container: Container
+    init(container: Container) {
+        self.container = container
+        step(to: AppStep.firstStart)
     }
 }

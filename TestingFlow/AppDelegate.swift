@@ -18,7 +18,7 @@ class AppDelegate: UIResponder {
     
     private let coordinator = Coordinator()
     private let container = makeContainer()
-    private lazy var appFlow: AppFlow = AppFlow(container: container)
+    private var appFlow: AppFlow?
 }
 
 extension AppDelegate: UIApplicationDelegate, HasDisposeBag {
@@ -26,9 +26,11 @@ extension AppDelegate: UIApplicationDelegate, HasDisposeBag {
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.makeKeyAndVisible()
         self.window = window
+        let appFlow = AppFlow(container: container, window: window)
         coordinator.rx.didNavigate.subscribe(onNext: { (flow, step) in print("Did navigate to flow=\(flow) and step=\(step)") }).disposed(by: disposeBag)
-        Flows.whenReady(flow1: appFlow) { [unowned window] in window.rootViewController = $0 }
-        coordinator.coordinate(flow: appFlow, withStepper: appFlow)
+        let stepper = AppStepper(container: container)
+        coordinator.coordinate(flow: appFlow, withStepper: stepper)
+        self.appFlow = appFlow
         return true
     }
 }
