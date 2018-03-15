@@ -26,17 +26,17 @@ final class VersionFlow: Flow, Stepper {
 }
 
 extension VersionFlow {
-    var root: UIViewController { return navigationController }
+    var root: Presentable { return navigationController }
     
     func navigate(to step: Step) -> NextFlowItems {
-        guard let step = step as? AppStep else { return .stepNotHandled }
+        guard let step = step as? AppStep else { return .none }
         switch step {
         case .version(.start): return navigate(to: AppStep.version(.forceUpdate))
         case .version(.forceUpdate): return navigateToMockForceUpdateScreen()
         case .version(.forceUpdateBlock): return navigateToForceUpdateBlockingScreen()
         case .version(.onboarding): return navigateToOnboardingScreen()
         case .version(.onboardingDone): return navigateToNextFlow()
-        default: return .stepNotHandled
+        default: return .none
         }
     }
 }

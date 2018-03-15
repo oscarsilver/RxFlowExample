@@ -6,7 +6,7 @@ PODS:
     - Differentiator (~> 3.0)
     - RxCocoa (~> 4.0)
     - RxSwift (~> 4.0)
-  - RxFlow (1.1.0):
+  - RxFlow (1.3.0):
     - RxCocoa (>= 4.0.0)
     - RxSwift (>= 4.0.0)
   - RxSwift (4.1.1)
@@ -20,7 +20,7 @@ PODS:
 
 DEPENDENCIES:
   - RxDataSources
-  - RxFlow
+  - RxFlow (from `https://github.com/eberrydigital/RxFlow.git`)
   - RxSwift
   - Swinject
   - SwinjectAutoregistration
@@ -28,10 +28,15 @@ DEPENDENCIES:
   - ViewComposer (from `https://github.com/Sajjon/ViewComposer.git`)
 
 EXTERNAL SOURCES:
+  RxFlow:
+    :git: https://github.com/eberrydigital/RxFlow.git
   ViewComposer:
     :git: https://github.com/Sajjon/ViewComposer.git
 
 CHECKOUT OPTIONS:
+  RxFlow:
+    :commit: d992859e4b8fbfb8abf4aa4fb86641dcca3babfa
+    :git: https://github.com/eberrydigital/RxFlow.git
   ViewComposer:
     :commit: 84de23ebfd98c16b01e1b81d89fd7b8ba0dee206
     :git: https://github.com/Sajjon/ViewComposer.git
@@ -40,7 +45,7 @@ SPEC CHECKSUMS:
   Differentiator: a87be69eba49ec4ab460c7671143ee3a9eececfd
   RxCocoa: fd0862fd2df95fa55562ad28ffd2522c25eb4a85
   RxDataSources: cb7c31e652a87ebb919da45f716bbb87b3765f6b
-  RxFlow: a15689752f0b8a97d903d8a425b217cefd887103
+  RxFlow: 9f383089aa2cafb9bd03ca172048c44940f3aef7
   RxSwift: c6e3b1c7b325c7d121cd4327e9d98b7ed746b570
   Sourcery: ac71ac4d490f62fd381a9f3b558f3093d91bddd5
   Swinject: afea49fd95f392b41171669f165842879c48fad6
@@ -48,6 +53,6 @@ SPEC CHECKSUMS:
   TinyConstraints: 4721a4b303c799328867078ade6560e152df54d1
   ViewComposer: 9a79824697ab67eaf85f407a04e11f6cbe1c2df9
 
-PODFILE CHECKSUM: de0c28c2854f35085fcda4132f45a6c8a599839d
+PODFILE CHECKSUM: e4724b8eecc82efd4354e6cc5d52486c09199c48
 
 COCOAPODS: 1.4.0

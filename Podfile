@@ -6,7 +6,7 @@ target 'TestingFlow' do
   use_frameworks!
 
   pod 'RxSwift'
-  pod 'RxFlow'
+  pod 'RxFlow', :git => 'https://github.com/eberrydigital/RxFlow.git'
   pod 'RxDataSources'
   pod 'TinyConstraints'
   pod 'Swinject'

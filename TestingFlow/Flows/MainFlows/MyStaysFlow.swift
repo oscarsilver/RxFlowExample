@@ -22,14 +22,14 @@ final class MyStaysFlow: Flow, Stepper {
 }
 
 extension MyStaysFlow {
-    var root: UIViewController { return navigationViewController }
+    var root: Presentable { return navigationViewController }
     
     func navigate(to step: Step) -> NextFlowItems {
-        guard let step = step as? AppStep, case let .main(main) = step else { return .stepNotHandled }
+        guard let step = step as? AppStep, case let .main(main) = step else { return .none }
         switch main {
         case .tab(.myStays): return navigateToMyStaysScreen()
-        case .tab(.myPage): print("~~~ My Page not handled ~~~"); return .stepNotHandled
-        default: return .stepNotHandled
+        case .tab(.myPage): print("~~~ My Page not handled ~~~"); return .none
+        default: return .none
         }
     }
 }

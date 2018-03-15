@@ -26,17 +26,17 @@ final class AuthFlow: Flow, Stepper {
 }
 
 extension AuthFlow {
-    var root: UIViewController { return navigationController }
+    var root: Presentable { return navigationController }
     
     func navigate(to step: Step) -> NextFlowItems {
-        guard let step = step as? AppStep else { return .stepNotHandled }
+        guard let step = step as? AppStep else { return .none }
         switch step {
         case .auth(.start): return  navigate(to: AppStep.auth(.signInOrSignUp))
         case .auth(.signInOrSignUp): return navigateToSignInOrSignUpScreen()
         case .auth(.signIn): return navigateToSignInScreen()
         case .auth(.signUp): return navigateToSignUpScreen()
         case .auth(.signInDone), .auth(.signUpDone): self.step(to: .auth(.done)); return .none
-        default: return .stepNotHandled
+        default: return .none
         }
     }
 }

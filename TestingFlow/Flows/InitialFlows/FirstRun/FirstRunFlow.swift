@@ -25,10 +25,10 @@ final class FirstRunFlow: Flow, Stepper {
 }
 
 extension FirstRunFlow {
-    var root: UIViewController { return navigationController }
+    var root: Presentable { return navigationController }
     
     func navigate(to step: Step) -> NextFlowItems {
-        guard let step = step as? AppStep else { return .stepNotHandled }
+        guard let step = step as? AppStep else { return .none }
         switch step {
         case .first(.start): return navigate(to: AppStep.first(.applePay))
         case .first(.applePay): return navigateToApplePaySplashScreen()
@@ -37,7 +37,7 @@ extension FirstRunFlow {
         case .first(.permissionsDone):
             self.step(to: .first(.done)) // same as `self.step.accept(AppStep.first(.done))`
             return .none
-        default: return .stepNotHandled
+        default: return .none
         }
     }
 }

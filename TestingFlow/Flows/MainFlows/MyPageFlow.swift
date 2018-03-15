@@ -11,7 +11,6 @@ import UIKit
 import RxFlow
 
 final class MyPageFlow: Flow, Stepper {
-    
     private let navigationViewController = UINavigationController()
     private let authService: AuthService
     
@@ -22,14 +21,14 @@ final class MyPageFlow: Flow, Stepper {
 }
 
 extension MyPageFlow {
-    var root: UIViewController { return navigationViewController }
+    var root: Presentable { return navigationViewController }
     
     func navigate(to step: Step) -> NextFlowItems {
-        guard let step = step as? AppStep, case let .main(main) = step else { return .stepNotHandled }
+        guard let step = step as? AppStep, case let .main(main) = step else { return .none }
         switch main {
-        case .tab(.myStays): print("~~~ My Stays not handled ~~~"); return .stepNotHandled
+        case .tab(.myStays): print("~~~ My Stays not handled ~~~"); return .none
         case .tab(.myPage): return navigateToMyPageScreen()
-        default: return .stepNotHandled
+        default: return .none
         }
     }
 }
